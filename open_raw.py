@@ -7,7 +7,6 @@ Created on Wed Jan 25 15:41:08 2023
 
 from os import chdir, listdir
 from os.path import isfile, join
-import numpy as np
 import mne
 
 ## Import data ##############################################################
@@ -26,56 +25,51 @@ for sys in system:
     
     for cond in condition:
              
-        if isfile("preprocessing_150_f{cond}.npy"):
-            table = np.load("preprocessing_150_f{cond}.npy")
-        else:
-            table = np.array([['ID', 'no. rejected channel', 'no. rejected components', '% rejected trials']])
+        filenames = listdir(sys_dir)
             
-            filenames = listdir(sys_dir)
+        for filename in filenames:
+            if filename[-5:] != ".vhdr":
+                continue
             
-            for filename in filenames:
-                if filename[-5:] != ".vhdr":
-                    continue
+            eeg_data = mne.io.read_raw_brainvision(filename, preload=True)
+            
+            if "Nass" in sys:
+                # Set channel types
+                eeg_data.set_channel_types(mapping = {'vEOG': 'eog', 'HEOG': 'eog', 'VEOG2': 'eog'})
                 
-                eeg_data = mne.io.read_raw_brainvision(filename, preload=True)
+                ## Reference data to average of mastoids
+                eeg_data.set_eeg_reference(ref_channels=['M1', 'M2'], ch_type='eeg')
                 
-                if "Nass" in sys:
-                    # Set channel types
-                    eeg_data.set_channel_types(mapping = {'vEOG': 'eog', 'HEOG': 'eog', 'VEOG2': 'eog'})
-                    
-                    ## Reference data to average of mastoids
-                    eeg_data.set_eeg_reference(ref_channels=['M1', 'M2'], ch_type='eeg')
-                    
-                    ## Set the montage
-                    eeg_data.set_montage('standard_1005')
+                ## Set the montage
+                eeg_data.set_montage('standard_1005')
+            
+            else: 
+                # Set channel types
+                eeg_data.set_channel_types(mapping = {'BIP1': 'eog', 'BIP2': 'eog'}) # BIP1 = horizontal, BIP2 = vertical (left) 
                 
-                else: 
-                    # Set channel types
-                    eeg_data.set_channel_types(mapping = {'BIP1': 'eog', 'BIP2': 'eog'}) # BIP1 = horizontal, BIP2 = vertical (left) 
-                    
-                    # Reference data to average of mastoids
-                    eeg_data.set_eeg_reference(ref_channels=['3LD', '3RD'], ch_type='eeg')
-                    
-                    ## Set the montage
-                    digmon = mne.channels.read_dig_fif("Y:\\01_Studien\\29_TRONA\\Allgemeines\\Info_Trocken_EEG\\montage_ANTWaveguard.fif")  
-                    eeg_data.set_montage(digmon)
-                    
-                sub = filename.partition("_")
-                sub = sub[0]
-                    
-                if isfile(f'{sub}_NA_badch.txt'):
-                    with open(f'{sub}_NA_badch.txt', 'r') as f:
-                        bad_ch = [line.rstrip('\n') for line in f]
+                # Reference data to average of mastoids
+                eeg_data.set_eeg_reference(ref_channels=['3LD', '3RD'], ch_type='eeg')
+                
+                ## Set the montage
+                digmon = mne.channels.read_dig_fif("Y:\\01_Studien\\29_TRONA\\Allgemeines\\Info_Trocken_EEG\\montage_ANTWaveguard.fif")  
+                eeg_data.set_montage(digmon)
+                
+            sub = filename.partition("_")
+            sub = sub[0]
+                
+            if isfile(f'{sub}_NA_badch.txt'):
+                with open(f'{sub}_NA_badch.txt', 'r') as f:
+                    bad_ch = [line.rstrip('\n') for line in f]
+    
+                eeg_data.info['bads'] = bad_ch
+                
+            else:
+                eeg_data.plot(duration=10, n_channels=len(eeg_data.ch_names), scalings=25e-6) #scale=50uV, all channels, block=True pauses script while plot is open
+           
+                bad_ch = eeg_data.info['bads']
         
-                    eeg_data.info['bads'] = bad_ch
-                    
-                else:
-                    eeg_data.plot(duration=10, n_channels=len(eeg_data.ch_names), scalings=25e-6) #scale=50uV, all channels, block=True pauses script while plot is open
-               
-                    bad_ch = eeg_data.info['bads']
-            
-                    with open(f'{sub}_NA_badch.txt', 'w') as f:
-                        for c in bad_ch:
-                            f.write(str(c) + '\n')
+                with open(f'{sub}_NA_badch.txt', 'w') as f:
+                    for c in bad_ch:
+                        f.write(str(c) + '\n')
 
         
