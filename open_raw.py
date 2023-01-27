@@ -21,8 +21,8 @@ preposts = ["1", "2"]
 for sys in system:
     
     sys_dir = join(data_dir, f"{sys}")
-    chdir(join(out_dir, f"{sys}"))
-    
+    chdir(sys_dir)
+        
     for cond in condition:
              
         filenames = listdir(sys_dir)
@@ -56,8 +56,8 @@ for sys in system:
                 
             sub = filename.partition("_")
             sub = sub[0]
-                
-            if isfile(f'{sub}_NA_badch.txt'):
+                            
+            if isfile(join(out_dir, f"{sys}", f'{sub}_NA_badch.txt')):
                 with open(f'{sub}_NA_badch.txt', 'r') as f:
                     bad_ch = [line.rstrip('\n') for line in f]
     
