@@ -16,8 +16,11 @@ from mne.preprocessing import (ICA)
 data_dir = ("Y:\\01_Studien\\29_TRONA\\Daten\\")
 out_dir = ("Y:\\01_Studien\\29_TRONA\\Analysen_und_Ergebnisse\\")
 
-system = ["Nass", "Trocken Artefact Corrected"]
-condition = ["TOENE", "REEG1", "REEG2"]
+#system = ["Nass", "Trocken Artefact Corrected"]
+system = ["Nass"]
+condition = ["TOENE"]
+
+#condition = ["TOENE", "REEG1", "REEG2"]
 
 for sys in system:
     
@@ -33,7 +36,7 @@ for sys in system:
             table = np.array([['ID', 'no. rejected components']])
             
         for filename in filenames:
-            if filename[-7:] != f"{cond}_epo.fif":
+            if f"{cond}_epo.fif" not in filename:
                 continue
             
             epochs = mne.read_epochs(filename)
@@ -68,7 +71,7 @@ for sys in system:
             if isfile(f"{file[0]}ica.fif"):
                 ica=mne.preprocessing.read_ica(f"{file[0]}ica.fif")
             else:
-                ica = ICA(n_components=15, max_iter='auto', random_state=97)
+                ica = ICA(n_components=15, method = "picard")
                 ica.fit(epochs_bip_ref)
                 ica.save(f"{file[0]}ica.fif", overwrite=True)
      
