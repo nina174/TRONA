@@ -14,8 +14,8 @@ import mne
 data_dir = ("Y:\\01_Studien\\29_TRONA\\Daten\\")
 out_dir = ("Y:\\01_Studien\\29_TRONA\\Analysen_und_Ergebnisse\\")
 
-system = ["Nass", "Trocken Artefact Corrected"]
-condition = ["TOENE", "REEG"]
+system = ["Nass"]
+condition = ["TOENE"]
 preposts = ["1", "2"]
 
 for sys in system:
@@ -28,7 +28,7 @@ for sys in system:
         filenames = listdir(sys_dir)
             
         for filename in filenames:
-            if filename[-5:] != ".vhdr":
+            if filename[-5:] != ".vhdr" or "_A_" in filename or "_B_" in filename:
                 continue
             
             eeg_data = mne.io.read_raw_brainvision(filename, preload=True)
