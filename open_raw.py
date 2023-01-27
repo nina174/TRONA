@@ -33,8 +33,10 @@ for sys in system:
             eeg_data = mne.io.read_raw_brainvision(filename, preload=True)
             
             if "Nass" in sys:
-                # Set channel types
-                eeg_data.set_channel_types(mapping = {'vEOG': 'eog', 'HEOG': 'eog', 'VEOG2': 'eog'})
+                
+                if "vEOG" in eeg_data.info["ch_names"]: 
+                    # Set channel types
+                    eeg_data.set_channel_types(mapping = {'vEOG': 'eog', 'HEOG': 'eog', 'VEOG2': 'eog'})
                 
                 ## Reference data to average of mastoids
                 eeg_data.set_eeg_reference(ref_channels=['M1', 'M2'], ch_type='eeg')
