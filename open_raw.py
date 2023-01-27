@@ -14,8 +14,8 @@ import mne
 data_dir = ("Y:\\01_Studien\\29_TRONA\\Daten\\")
 out_dir = ("Y:\\01_Studien\\29_TRONA\\Analysen_und_Ergebnisse\\")
 
-system = ["Nass"]
-condition = ["TOENE"]
+system = ["Nass", "Trocken Artefact Corrected"]
+condition = ["TOENE", "REEG1", "REEG2"]
 
 for sys in system:
     
@@ -27,7 +27,7 @@ for sys in system:
         filenames = listdir(sys_dir)
             
         for filename in filenames:
-            if filename[-5:] != ".vhdr" or "_A_" in filename or "_B_" in filename:
+            if filename[-5:] != ".vhdr" or f"{cond}" not in filename:
                 continue
             
             eeg_data = mne.io.read_raw_brainvision(filename, preload=True)
@@ -73,6 +73,6 @@ for sys in system:
                         
             file = filename.partition("202")    
                         
-            eeg_data.save(join(out_dir, f"{file[0]}raw.fif"))
+            eeg_data.save(join(out_dir, f"{sys}", f"{file[0]}raw.fif"), overwrite=True)
 
         

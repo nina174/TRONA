@@ -15,7 +15,7 @@ data_dir = ("Y:\\01_Studien\\29_TRONA\\Daten\\")
 out_dir = ("Y:\\01_Studien\\29_TRONA\\Analysen_und_Ergebnisse\\")
 
 system = ["Nass", "Trocken Artefact Corrected"]
-condition = ["TOENE", "REEG"]
+condition = ["TOENE", "REEG1", "REEG2"]
 
 for sys in system:
     
