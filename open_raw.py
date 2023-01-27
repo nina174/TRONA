@@ -58,7 +58,7 @@ for sys in system:
             sub = sub[0]
                             
             if isfile(join(out_dir, f"{sys}", f'{sub}_NA_badch.txt')):
-                with open(f'{sub}_NA_badch.txt', 'r') as f:
+                with open(join(out_dir, f"{sys}", f'{sub}_NA_badch.txt'), 'r') as f:
                     bad_ch = [line.rstrip('\n') for line in f]
     
                 eeg_data.info['bads'] = bad_ch
