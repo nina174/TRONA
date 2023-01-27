@@ -14,8 +14,10 @@ import mne
 data_dir = ("Y:\\01_Studien\\29_TRONA\\Daten\\")
 out_dir = ("Y:\\01_Studien\\29_TRONA\\Analysen_und_Ergebnisse\\")
 
-system = ["Nass", "Trocken Artefact Corrected"]
-condition = ["TOENE", "REEG1", "REEG2"]
+#system = ["Nass", "Trocken Artefact Corrected"]
+system = ["Nass"]
+#condition = ["TOENE", "REEG1", "REEG2"]
+condition = ["TOENE"]
 
 for sys in system:
     
@@ -32,7 +34,7 @@ for sys in system:
             
             file = filename.partition("202")    
                         
-            eeg_data = mne.io.read_raw_fif(join(out_dir, f"{file[0]}raw.fif"))
+            eeg_data = mne.io.read_raw_fif(join(out_dir, f"{sys}", f"{file[0]}raw.fif"), preload = True)
             
             ## Filter the data            
             eeg_data.filter(l_freq=0.1, h_freq = 25, picks=['eog', 'eeg'])
@@ -41,8 +43,8 @@ for sys in system:
             if cond=="TOENE":
                 events, event_id = mne.events_from_annotations(eeg_data, regexp='Stimulus')
             
-                event_dict = {'standard1': 10001, 'standard2': 10002,
-                          'deviant1': 10003, 'deviant2': 10004}
+                event_dict = {'standard1': 1, 'standard2': 2,
+                          'deviant1': 3, 'deviant2': 4}
             
                 #decim = np.round(eeg_data.info['sfreq']/512) #actual sampling frequency divided by desired sampling frequency to get decim
             
