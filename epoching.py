@@ -16,7 +16,6 @@ out_dir = ("Y:\\01_Studien\\29_TRONA\\Analysen_und_Ergebnisse\\")
 
 system = ["Nass", "Trocken Artefact Corrected"]
 condition = ["TOENE", "REEG"]
-preposts = ["1", "2"]
 
 for sys in system:
     
@@ -26,13 +25,15 @@ for sys in system:
     for cond in condition:
              
         filenames = listdir(sys_dir)
-            
+        
         for filename in filenames:
             if filename[-5:] != ".vhdr" or f"{cond}" not in filename:
                 continue
             
-            eeg_data = mne.io.read_raw_brainvision(filename, preload=True)
-
+            file = filename.partition("202")    
+                        
+            eeg_data = mne.io.read_raw_fif(join(out_dir, f"{file[0]}raw.fif"))
+            
             ## Filter the data            
             eeg_data.filter(l_freq=0.1, h_freq = 25, picks=['eog', 'eeg'])
             
@@ -69,6 +70,5 @@ for sys in system:
             
             ## Save preprocessed data
             
-            file = filename.partition("202")            
-            epochs.save(join(out_dir,f'{file[0]}epo.fif'), overwrite=True)
+            epochs.save(join(out_dir, f"{sys}", f"{file[0]}epo.fif"), overwrite=True)
                 
