@@ -57,15 +57,15 @@ for sys in system:
          
         file = filename.partition("epo.fif")    
  
-        if isfile(f"{file[0]}_ica.fif"):
-            ica=mne.preprocessing.read_ica(f"{file[0]}_ica.fif")
+        if isfile(f"{file[0]}ica.fif"):
+            ica=mne.preprocessing.read_ica(f"{file[0]}ica.fif")
         else:
             ica = ICA(n_components=15, max_iter='auto', random_state=97)
             ica.fit(epochs_bip_ref)
             ica.save(f"{file[0]}ica.fif", overwrite=True)
  
         #ica.plot_sources(epochs_bip_ref, show_scrollbars=False) #right clicking on the name of the component will bring up a plot of its properties
-        ica.plot_components(inst=epochs_bip_ref) #clicking on component will open properties window
+        #ica.plot_components(inst=epochs_bip_ref) #clicking on component will open properties window
  
         eog_indices, eog_scores = ica.find_bads_eog(epochs_bip_ref, measure = 'correlation', threshold = 0.2)
         #ica.plot_scores(eog_scores) # barplot of ICA component "EOG match" scores
