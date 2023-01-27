@@ -68,7 +68,7 @@ for sys in system:
            
                 bad_ch = eeg_data.info['bads']
         
-                with open(f'{sub}_NA_badch.txt', 'w') as f:
+                with open(join(out_dir, f"{sys}", f'{sub}_NA_badch.txt'), 'w') as f:
                     for c in bad_ch:
                         f.write(str(c) + '\n')
 
