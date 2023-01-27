@@ -16,7 +16,6 @@ out_dir = ("Y:\\01_Studien\\29_TRONA\\Analysen_und_Ergebnisse\\")
 
 system = ["Nass"]
 condition = ["TOENE"]
-preposts = ["1", "2"]
 
 for sys in system:
     
@@ -71,5 +70,9 @@ for sys in system:
                 with open(join(out_dir, f"{sys}", f'{sub}_NA_badch.txt'), 'w') as f:
                     for c in bad_ch:
                         f.write(str(c) + '\n')
+                        
+            file = filename.partition("202")    
+                        
+            eeg_data.save(join(out_dir, f"{file[0]}raw.fif"))
 
         
