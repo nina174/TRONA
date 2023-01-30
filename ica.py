@@ -88,13 +88,13 @@ for sys in system:
             ## Interpolation of bad channels
             reconst_epochs.interpolate_bads(reset_bads=True, method={"eeg":"spline"}, verbose="INFO")
                 
-            epochs.save(f"{file[0]}ica_epo.fif", overwrite=True)
+            reconst_epochs.save(f"{file[0]}ica_epo.fif", overwrite=True)
             
             sub = filename.partition("_")
             sub = sub[0]
             
             table = np.append(table,[[sub, len(eog_indices)]], axis = 0)
             
-        np.save(f"{cond}_preprocessing_150.npy", table)
+        np.save(f"no_rej_components_{cond}.npy", table)
         
         
