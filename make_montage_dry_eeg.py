@@ -17,6 +17,7 @@ chdir(montage_dir)
 elec_pos = join(montage_dir, "ANTWaveguard_pos.csv")
 
 elec_df = pd.read_csv(elec_pos,delimiter=";") # x- und y-Koordinaten vertauscht
+elec_df["xpos"] = (elec_df)["xpos"]*(-1) # rechts und links sind vertauscht -> invert x
 elec_df = elec_df[128:198]
 elec_dict = {}
 for idx, row in elec_df.iterrows():
@@ -27,4 +28,12 @@ for idx, row in elec_df.iterrows():
 
 digmon = mne.channels.make_dig_montage(ch_pos=elec_dict)
 
-digmon.save("montage_ANTWaveguard.fif")
+ch_names = digmon.ch_names
+
+# open file in write mode
+with open(join(montage_dir, "ANTWaveguard_pos_chnames.csv"), "w") as fp:
+    for ch_name in ch_names:
+        # write each item on a new line
+        fp.write("%s\n" % ch_name)
+
+digmon.save("montage_ANTWaveguard.fif", overwrite=True)
